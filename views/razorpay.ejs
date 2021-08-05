@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>RazorPay</title>
+  </head>
+
+  <body>
+
+		<section >
+			<button id="rzp-button1" >Pay</button>
+	    </section>
+        <script src="https://checkout.razorpay.com/v1/checkout.js"></script> <!--  razorpay CDN -->
+        <script src="https://unpkg.com/axios/dist/axios.min.js"></script>  <!--  axios CDN -->
+        <script>
+                axios.post('/order').then((info)=>{
+                console.log(info);
+                var options = {
+                    "key": "rzp_test_3fI4CZD2YWbzRN", // Enter the Key ID generated from the Dashboard
+                    "amount": info.data.order.amount, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
+                    "currency": "INR",
+                    "name": "heal-with-music",
+                    "description": "Test Transaction",
+                    "image": "https://example.com/your_logo",
+                    "order_id": info.data.order.id, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
+                    "callback_url": "/order-verify/"+info.data.userdetail.username,
+                    "prefill": {
+                        "name": "name form database",
+                        "email": "email from database"
+                    },
+                    "notes": {
+                        "address": "Razorpay Corporate Office"
+                    },
+                    "theme": {
+                        "color": "#3399cc" //we can change theme color by changing this value
+                    }
+                };
+                    //invoking razorpay payment portal
+                    var rzp1 = new Razorpay(options);
+                    document.getElementById('rzp-button1').onclick = function(e){
+                        rzp1.open();
+                        e.preventDefault();
+                    }
+            })
+          
+        </script>
+  </body>
+
+</html>
